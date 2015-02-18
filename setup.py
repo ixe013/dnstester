@@ -16,10 +16,12 @@ with open('HISTORY.rst') as history_file:
 
 requirements = [
     # TODO: put package requirements here
+    dnspython,
 ]
 
 test_requirements = [
     # TODO: put package test requirements here
+    udns
 ]
 
 setup(

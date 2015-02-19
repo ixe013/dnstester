@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from setuptools.command.test import test as TestCommand
 
 
 try:
@@ -14,14 +15,23 @@ with open('README.rst') as readme_file:
 with open('HISTORY.rst') as history_file:
     history = history_file.read().replace('.. :changelog:', '')
 
+class PyTest(TestCommand):
+    def finalize_options(self):
+        TestCommand.finalize_options(self)
+        self.test_args = []
+        self.test_suite = True
+
+    def run_tests(self):
+        import pytest
+        errcode = pytest.main(self.test_args)
+        sys.exit(errcode)
+
 requirements = [
     # TODO: put package requirements here
-    dnspython,
 ]
 
 test_requirements = [
     # TODO: put package test requirements here
-    udns
 ]
 
 setup(

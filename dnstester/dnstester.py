@@ -1,16 +1,14 @@
 # -*- coding: utf-8 -*-
-from pprint import pprint as pp
-import dnsfacade
+if __name__ == '__main__':
+    import dnsfacade
+    from pprint import pprint as pp
 
-def log(msg):
-    print msg
+    cache = {}
 
-#print dnsfacade.getAuthoritativeNameserver('www.paralint.com', log)
-cache = {}
+    nameservers = dnsfacade.getNameserverForHost('www.paralint.com')
 
-nameservers = dnsfacade.getNameserverForHost('www.paralint.com')
+    for nameserver in nameservers:
+        cache[nameserver] = { 'paralint.com' : dnsfacade.getRecordValues('paralint.com', nameserver) }
 
-for nameserver in nameservers:
-    cache[nameserver] = { 'paralint.com' : dnsfacade.getRecordValues('paralint.com', nameserver) }
+    pp(cache)
 
-pp(cache)

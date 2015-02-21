@@ -1,28 +1,10 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+import dnstester.analyze
 
-"""
-test_dnstester
-----------------------------------
+class TestClass:
+    def test_getComparaisonHeaders(self):
+        nameservers = { 'NS1':None, 'NS2':None }
+        headers = dnstester.analyze.getComparaisonHeaders({}, nameservers)
+        assert headers == ['Host', 'Record type', 'Expected', 'Nameserver NS1', 'Result', 'Nameserver NS2', 'Result', 'Overall result']
 
-Tests for `dnstester` module.
-"""
+        
 
-import unittest
-
-from dnstester import dnstester
-
-
-class TestDnstester(unittest.TestCase):
-
-    def setUp(self):
-        pass
-
-    def test_something(self):
-        pass
-
-    def tearDown(self):
-        pass
-
-if __name__ == '__main__':
-    unittest.main()

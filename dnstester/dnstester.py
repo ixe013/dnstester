@@ -37,7 +37,7 @@ if __name__ == '__main__':
         for rdtype,values in entries.items():
             #For each value of the current record type
             for value in values:
-                difference_found = False
+                difference_found = 0
                 #Append a new result line
                 results.append( [host, rdtype, value] )
                 #For every nameserver we must lookup
@@ -46,15 +46,18 @@ if __name__ == '__main__':
                         #If the value is in the cache
                         if value in cache[nameserver][host][rdtype]:
                             results[-1].append(value)
+                            results[-1].append('PASS')
                         else:
-                            difference_found = True
+                            difference_found += 1
                             #Append the result we found
-                            results[-1].append('*'+cache[nameserver][host][rdtype][0])
+                            results[-1].append(cache[nameserver][host][rdtype][0])
+                            results[-1].append('FAILED')
                     except KeyError:
-                        difference_found = True
+                        difference_found += 1
                         results[-1].append('NXDOMAIN')
+                        results[-1].append('FAILED')
 
-                if difference_found:
+                if difference_found > 0:
                    results[-1].append('FAILED')
                 else:    
                    results[-1].append('PASS')

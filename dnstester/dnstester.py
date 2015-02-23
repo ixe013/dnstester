@@ -34,7 +34,7 @@ if __name__ == '__main__':
     results = []
 
     headers = analyze.getComparaisonHeaders(dnsdata, nameservers)
-
+    analyze.getComparaisonResults()
     for line in results:
         pp(line)
 

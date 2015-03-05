@@ -82,6 +82,20 @@ def getNameserverForHost(host=None):
     return nameservers
 
 
+def reverseLookup(ipaddress, name_server):
+    result = 'NXDOMAIN' 
+    address = dns.reversename.from_address(ipaddress)
+    request = dns.message.make_query(address, dns.rdatatype.PTR)
+    response = dns.query.udp(request, name_server)
+
+    try:
+        result = str(response.answer[0][0]).strip('.')
+    except IndexError:
+        pass
+
+    return { 'PTR': [result] }
+    
+
 def getRecordValues(domain, name_server):
     """
     Returns a simplified Python data structure that is easier to
@@ -103,10 +117,15 @@ def getRecordValues(domain, name_server):
                        dns.rdatatype.OPT, create=True, force_unique=True)
     response = dns.query.udp(request, name_server)
 
-    for record in response.answer:
-        result.setdefault(dns.rdatatype.to_text(record.rdtype), [])
-        for entry in record:
-            result[dns.rdatatype.to_text(record.rdtype)].append(entry.to_text())
+    if response.answer:
+        for record in response.answer:
+            result.setdefault(dns.rdatatype.to_text(record.rdtype), [])
+            for entry in record:
+                result[dns.rdatatype.to_text(record.rdtype)].append(entry.to_text().strip('.'))
+                #if record.rdtype == dns.rdatatype.A:
+                #   result.setdefault('PTR', []).append(reverseLookup(entry.to_text(), name_server))
+    else:
+        result = { 'A' : ['NXDOMAIN'] }
 
     return result
 

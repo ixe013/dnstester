@@ -24,6 +24,8 @@ def getComparaisonHeaders(dnsdata, cache):
 
 
 def getComparaisonResults(dnsdata, cache):
+    results = []
+
     #For every DNS records of a single hostname, get all the DNS entries
     for host,entries in dnsdata.items():
         #For every record type, get all the values
@@ -54,4 +56,35 @@ def getComparaisonResults(dnsdata, cache):
                    results[-1].append('FAILED')
                 else:    
                    results[-1].append('PASS')
+
+    return results
+
+
+def getEquivalentHostFile(dnsdata):
+    results = []
+
+    #For every DNS records of a single hostname, get all the DNS entries
+    for host in dnsdata:
+        try:
+            #For every record type, get all the values
+            current_host = host
+            current_ip = None
+            entries = dnsdata[host]
+
+            while True:
+                if 'A' in entries:
+                    #Found
+                    current_ip = entries['A'][0]
+                    results.append( (current_ip, host) )
+                    break
+                elif 'CNAME' in entries:
+                    current_host = entries['CNAME'][0]
+                    entries = dnsdata[current_host]
+                else:
+                    break
+
+        except KeyError:
+            pass
+
+    return results
 
